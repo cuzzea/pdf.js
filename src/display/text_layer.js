@@ -572,7 +572,7 @@ class TextLayerRenderTask {
     this._textDivs = textDivs || [];
     this._textContentItemsStr = textContentItemsStr || [];
     this._enhanceTextSelection = !!enhanceTextSelection;
-    this._fontInspectorEnabled = !!globalThis.FontInspector?.enabled;
+    this._fontInspectorEnabled = !!(globalThis.FontInspector && globalThis.FontInspector.enabled);
 
     this._reader = null;
     this._layoutTextLastFontSize = null;

@@ -100,13 +100,13 @@ class PDFScriptingManager {
     this._scripting = this._createScripting();
 
     this._internalEvents.set("updatefromsandbox", event => {
-      if (event?.source !== window) {
+      if (event.source !== window) {
         return;
       }
       this._updateFromSandbox(event.detail);
     });
     this._internalEvents.set("dispatcheventinsandbox", event => {
-      this._scripting?.dispatchEventInSandbox(event.detail);
+      this._scripting.dispatchEventInSandbox(event.detail);
     });
 
     this._internalEvents.set("pagechanging", ({ pageNumber, previous }) => {
@@ -128,12 +128,12 @@ class PDFScriptingManager {
     this._internalEvents.set("pagesdestroy", async event => {
       await this._dispatchPageClose(this._pdfViewer.currentPageNumber);
 
-      await this._scripting?.dispatchEventInSandbox({
+      await this._scripting.dispatchEventInSandbox({
         id: "doc",
         name: "WillClose",
       });
 
-      this._closeCapability?.resolve();
+      this._closeCapability.resolve();
     });
 
     this._domEvents.set("mousedown", event => {
@@ -171,13 +171,13 @@ class PDFScriptingManager {
 
       this._eventBus.dispatch("sandboxcreated", { source: this });
     } catch (error) {
-      console.error(`PDFScriptingManager.setDocument: "${error?.message}".`);
+      console.error(`PDFScriptingManager.setDocument: "${error.message}".`);
 
       await this._destroyScripting();
       return;
     }
 
-    await this._scripting?.dispatchEventInSandbox({
+    await this._scripting.dispatchEventInSandbox({
       id: "doc",
       name: "Open",
     });
@@ -195,28 +195,28 @@ class PDFScriptingManager {
   }
 
   async dispatchWillSave(detail) {
-    return this._scripting?.dispatchEventInSandbox({
+    return this._scripting.dispatchEventInSandbox({
       id: "doc",
       name: "WillSave",
     });
   }
 
   async dispatchDidSave(detail) {
-    return this._scripting?.dispatchEventInSandbox({
+    return this._scripting.dispatchEventInSandbox({
       id: "doc",
       name: "DidSave",
     });
   }
 
   async dispatchWillPrint(detail) {
-    return this._scripting?.dispatchEventInSandbox({
+    return this._scripting.dispatchEventInSandbox({
       id: "doc",
       name: "WillPrint",
     });
   }
 
   async dispatchDidPrint(detail) {
-    return this._scripting?.dispatchEventInSandbox({
+    return this._scripting.dispatchEventInSandbox({
       id: "doc",
       name: "DidPrint",
     });
@@ -227,7 +227,7 @@ class PDFScriptingManager {
   }
 
   get destroyPromise() {
-    return this._destroyCapability?.promise || null;
+    return this._destroyCapability.promise || null;
   }
 
   get ready() {
@@ -319,7 +319,7 @@ class PDFScriptingManager {
         element.dispatchEvent(new CustomEvent("updatefromsandbox", { detail }));
       } else {
         // The element hasn't been rendered yet, use the AnnotationStorage.
-        this._pdfDocument?.annotationStorage.setValue(elementId, detail);
+        this._pdfDocument.annotationStorage.setValue(elementId, detail);
       }
     }
   }
@@ -341,7 +341,7 @@ class PDFScriptingManager {
     }
     const pageView = this._pdfViewer.getPageView(/* index = */ pageNumber - 1);
 
-    if (pageView?.renderingState !== RenderingStates.FINISHED) {
+    if (pageView.renderingState !== RenderingStates.FINISHED) {
       this._pageOpenPending.add(pageNumber);
       return; // Wait for the page to finish rendering.
     }
@@ -350,13 +350,13 @@ class PDFScriptingManager {
     const actionsPromise = (async () => {
       // Avoid sending, and thus serializing, the `actions` data more than once.
       const actions = await (!visitedPages.has(pageNumber)
-        ? pageView.pdfPage?.getJSActions()
+        ? pageView.pdfPage.getJSActions()
         : null);
       if (pdfDocument !== this._pdfDocument) {
         return; // The document was closed while the actions resolved.
       }
 
-      await this._scripting?.dispatchEventInSandbox({
+      await this._scripting.dispatchEventInSandbox({
         id: "page",
         name: "PageOpen",
         pageNumber,
@@ -391,7 +391,7 @@ class PDFScriptingManager {
       return; // The document was closed while the actions resolved.
     }
 
-    await this._scripting?.dispatchEventInSandbox({
+    await this._scripting.dispatchEventInSandbox({
       id: "page",
       name: "PageClose",
       pageNumber,
@@ -445,7 +445,7 @@ class PDFScriptingManager {
     if (!this._scripting) {
       this._pdfDocument = null;
 
-      this._destroyCapability?.resolve();
+      this._destroyCapability.resolve();
       return;
     }
     if (this._closeCapability) {
@@ -484,7 +484,7 @@ class PDFScriptingManager {
     this._pageEventsReady = false;
     this._ready = false;
 
-    this._destroyCapability?.resolve();
+    this._destroyCapability.resolve();
   }
 }
 

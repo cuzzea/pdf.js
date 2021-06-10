@@ -94,7 +94,7 @@ class PDFOutlineViewer extends BaseTreeViewer {
     this._currentOutlineItemCapability = createPromiseCapability();
     if (
       outlineCount === 0 ||
-      this._pdfDocument?.loadingParams.disableAutoFetch
+      this._pdfDocument.loadingParams.disableAutoFetch
     ) {
       this._currentOutlineItemCapability.resolve(/* enabled = */ false);
     } else if (this._isPagesLoaded) {

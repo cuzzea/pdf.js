@@ -333,7 +333,7 @@ class TextLayerBuilder {
       clearedUntilDivIdx = match.end.divIdx + 1;
     }
 
-    if (!findController?.highlightMatches) {
+    if (!(findController && findController.highlightMatches)) {
       return;
     }
     // Convert the matches on the `findController` into the match format

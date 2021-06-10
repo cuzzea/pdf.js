@@ -446,10 +446,10 @@ class Field extends PDFObject {
     for (const element of oArray) {
       let displayValue, exportValue;
       if (Array.isArray(element)) {
-        displayValue = element[0]?.toString() || "";
-        exportValue = element[1]?.toString() || "";
+        displayValue = element[0].toString() || "";
+        exportValue = element[1].toString() || "";
       } else {
-        displayValue = exportValue = element?.toString() || "";
+        displayValue = exportValue = element.toString() || "";
       }
       this._items.push({ displayValue, exportValue });
     }

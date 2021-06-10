@@ -1291,9 +1291,9 @@ class PDFPageProxy {
    *   {Object} with JS actions.
    */
   getJSActions() {
-    return (this._jsActionsPromise ||= this._transport.getPageJSActions(
+    return (this._jsActionsPromise = (this._jsActionsPromise || this._transport.getPageJSActions(
       this._pageIndex
-    ));
+    )));
   }
 
   /**
@@ -1303,7 +1303,7 @@ class PDFPageProxy {
    *   children, very similar to a HTML DOM tree), or `null` if no XFA exists.
    */
   async getXfa() {
-    return this._transport._htmlForXfa?.children[this._pageIndex] || null;
+    return this._transport._htmlForXfa && this._transport._htmlForXfa.children[this._pageIndex] || null;
   }
 
   /**
@@ -1423,7 +1423,7 @@ class PDFPageProxy {
       pdfBug: this._pdfBug,
     });
 
-    (intentState.renderTasks ||= new Set()).add(internalRenderTask);
+    (intentState.renderTasks = intentState.renderTasks || new Set()).add(internalRenderTask);
     const renderTask = internalRenderTask.task;
 
     Promise.all([
@@ -1474,7 +1474,7 @@ class PDFPageProxy {
       opListTask = Object.create(null);
       opListTask.operatorListChanged = operatorListChanged;
       intentState.opListReadCapability = createPromiseCapability();
-      (intentState.renderTasks ||= new Set()).add(opListTask);
+      (intentState.renderTasks = intentState.renderTasks || new Set()).add(opListTask);
       intentState.operatorList = {
         fnArray: [],
         argsArray: [],
@@ -1556,7 +1556,7 @@ class PDFPageProxy {
    *   or `null` when no structure tree is present for the current page.
    */
   getStructTree() {
-    return (this._structTreePromise ||= this._transport.getStructTree(
+    return (this._structTreePromise = this._structTreePromise || this._transport.getStructTree(
       this._pageIndex
     ));
   }
@@ -1761,7 +1761,7 @@ class PDFPageProxy {
         return;
       }
     }
-    intentState.streamReader.cancel(new AbortException(reason?.message));
+    intentState.streamReader.cancel(new AbortException(reason['message']));
     intentState.streamReader = null;
 
     if (this._transport.destroyed) {
@@ -1807,7 +1807,7 @@ class LoopbackPort {
       let buffer, result;
       if ((buffer = value.buffer) && isArrayBuffer(buffer)) {
         // We found object with ArrayBuffer (typed array).
-        if (transfers?.includes(buffer)) {
+        if (transfers && 'includes' in transfers && transfers.includes(buffer)) {
           result = new value.constructor(
             buffer,
             value.byteOffset,
@@ -1852,7 +1852,7 @@ class LoopbackPort {
           continue;
         }
         if (typeof desc.value === "function") {
-          if (value.hasOwnProperty?.(i)) {
+          if (value && value.hasOwnProperty(i)) {
             throw new Error(
               `LoopbackPort.postMessage - cannot clone: ${value[i]}`
             );
@@ -1916,12 +1916,14 @@ const PDFWorker = (function PDFWorkerClosure() {
         fallbackWorkerSrc = "./pdf.worker.js";
       }
     } else if (typeof document === "object" && "currentScript" in document) {
-      const pdfjsFilePath = document.currentScript?.src;
-      if (pdfjsFilePath) {
-        fallbackWorkerSrc = pdfjsFilePath.replace(
-          /(\.(?:min\.)?js)(\?.*)?$/i,
-          ".worker$1$2"
-        );
+      if ('src' in document.currentScript){
+        const pdfjsFilePath = document.currentScript.src;
+        if (pdfjsFilePath) {
+          fallbackWorkerSrc = pdfjsFilePath.replace(
+            /(\.(?:min\.)?js)(\?.*)?$/i,
+            ".worker$1$2"
+          );
+        }
       }
     }
   }
@@ -1942,7 +1944,7 @@ const PDFWorker = (function PDFWorkerClosure() {
   function getMainThreadWorkerMessageHandler() {
     let mainWorkerMessageHandler;
     try {
-      mainWorkerMessageHandler = globalThis.pdfjsWorker?.WorkerMessageHandler;
+      mainWorkerMessageHandler = globalThis.pdfjsWorker.WorkerMessageHandler;
     } catch (ex) {
       /* Ignore errors. */
     }
@@ -2601,7 +2603,7 @@ class WorkerTransport {
           }
 
           let fontRegistry = null;
-          if (params.pdfBug && globalThis.FontInspector?.enabled) {
+          if (params.pdfBug && 'enabled' in globalThis.FontInspector && globalThis.FontInspector.enabled) {
             fontRegistry = {
               registerFont(font, url) {
                 globalThis.FontInspector.fontAdded(font, url);
@@ -2660,7 +2662,7 @@ class WorkerTransport {
 
           // Heuristic that will allow us not to store large data.
           const MAX_IMAGE_SIZE_TO_STORE = 8000000;
-          if (imageData?.data?.length > MAX_IMAGE_SIZE_TO_STORE) {
+          if (imageData && imageData.data && imageData.data.length > MAX_IMAGE_SIZE_TO_STORE) {
             pageProxy.cleanupAfterRender = true;
           }
           break;
@@ -2787,7 +2789,7 @@ class WorkerTransport {
       .sendWithPromise("SaveDocument", {
         numPages: this._numPages,
         annotationStorage: this.annotationStorage.serializable,
-        filename: this._fullReader?.filename ?? null,
+        filename: this._fullReader && this._fullReader.filename ? this._fullReader.filename : null,
       })
       .finally(() => {
         this.annotationStorage.resetModified();
@@ -2799,7 +2801,7 @@ class WorkerTransport {
   }
 
   hasJSActions() {
-    return (this._hasJSActionsPromise ||= this.messageHandler.sendWithPromise(
+    return (this._hasJSActionsPromise = this._hasJSActionsPromise || this.messageHandler.sendWithPromise(
       "HasJSActions",
       null
     ));
@@ -2889,8 +2891,8 @@ class WorkerTransport {
         return {
           info: results[0],
           metadata: results[1] ? new Metadata(results[1]) : null,
-          contentDispositionFilename: this._fullReader?.filename ?? null,
-          contentLength: this._fullReader?.contentLength ?? null,
+          contentDispositionFilename: this._fullReader && this._fullReader.filename ? this._fullReader.filename : null,
+          contentLength: this._fullReader && this._fullReader.contentLength ? this._fullReader.contentLength : null,
         };
       });
   }
@@ -2989,7 +2991,7 @@ class PDFObjects {
 
   has(objId) {
     const obj = this._objs[objId];
-    return obj?.resolved || false;
+    return obj && obj.resolved ? obj.resolved : false;
   }
 
   /**
@@ -3110,7 +3112,7 @@ const InternalRenderTask = (function InternalRenderTaskClosure() {
         canvasInRendering.add(this._canvas);
       }
 
-      if (this._pdfBug && globalThis.StepperManager?.enabled) {
+      if (this._pdfBug && globalThis.StepperManager && globalThis.StepperManager.enabled) {
         this.stepper = globalThis.StepperManager.create(this._pageIndex);
         this.stepper.init(this.operatorList);
         this.stepper.nextBreakPoint = this.stepper.getNextBreakPoint();

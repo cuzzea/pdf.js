@@ -327,7 +327,7 @@ class PDFSidebar {
     const pagesCount = pdfViewer.pagesCount;
     for (let pageIndex = 0; pageIndex < pagesCount; pageIndex++) {
       const pageView = pdfViewer.getPageView(pageIndex);
-      if (pageView?.renderingState === RenderingStates.FINISHED) {
+      if (pageView.renderingState === RenderingStates.FINISHED) {
         const thumbnailView = pdfThumbnailViewer.getThumbnail(pageIndex);
         thumbnailView.setImage(pageView);
       }

@@ -30,7 +30,7 @@ class PDFDataTransportStream {
       params.contentDispositionFilename || null;
 
     const initialData = params.initialData;
-    if (initialData?.length > 0) {
+    if (initialData.length) {
       const buffer = new Uint8Array(initialData).buffer;
       this._queuedChunks.push(buffer);
     }
@@ -86,19 +86,19 @@ class PDFDataTransportStream {
   }
 
   get _progressiveDataLength() {
-    return this._fullRequestReader?._loaded ?? 0;
+    return this._fullRequestReader._loaded ? this._fullRequestReader._loaded : 0;
   }
 
   _onProgress(evt) {
     if (evt.total === undefined) {
       // Reporting to first range reader, if it exists.
       const firstReader = this._rangeReaders[0];
-      if (firstReader?.onProgress) {
+      if (firstReader.onProgress) {
         firstReader.onProgress({ loaded: evt.loaded });
       }
     } else {
       const fullReader = this._fullRequestReader;
-      if (fullReader?.onProgress) {
+      if (fullReader.onProgress) {
         fullReader.onProgress({ loaded: evt.loaded, total: evt.total });
       }
     }

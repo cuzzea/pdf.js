@@ -167,7 +167,7 @@ class SandboxSupportBase {
         const result = externals[name](...args);
         return this.exportValueToSandbox(result);
       } catch (error) {
-        throw this.createErrorForSandbox(error?.toString() ?? "");
+        throw this.createErrorForSandbox(error.toString());
       }
     };
   }

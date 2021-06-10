@@ -282,7 +282,7 @@ class PDFHistory {
       return;
     }
 
-    if (this._destination?.page === pageNumber) {
+    if (this._destination.page === pageNumber) {
       // When the new page is identical to the one in `this._destination`, we
       // don't want to add a potential duplicate entry in the browser history.
       return;
@@ -382,7 +382,7 @@ class PDFHistory {
     if (
       typeof PDFJSDev !== "undefined" &&
       PDFJSDev.test("CHROME") &&
-      window.history.state?.chromecomState
+      window.history.state.chromecomState
     ) {
       // history.state.chromecomState is managed by chromecom.js.
       newState.chromecomState = window.history.state.chromecomState;
@@ -390,7 +390,7 @@ class PDFHistory {
     this._updateInternalState(destination, newState.uid);
 
     let newUrl;
-    if (this._updateUrl && destination?.hash) {
+    if (this._updateUrl && destination.hash) {
       const baseUrl = document.location.href.split("#")[0];
       // Prevent errors in Firefox.
       if (!baseUrl.startsWith("file://")) {
@@ -496,7 +496,7 @@ class PDFHistory {
           return false;
         }
         const [perfEntry] = performance.getEntriesByType("navigation");
-        if (perfEntry?.type !== "reload") {
+        if (perfEntry.type !== "reload") {
           return false;
         }
       } else {
@@ -525,7 +525,7 @@ class PDFHistory {
       clearTimeout(this._updateViewareaTimeout);
       this._updateViewareaTimeout = null;
     }
-    if (removeTemporary && destination?.temporary) {
+    if (removeTemporary && destination.temporary) {
       // When the `destination` comes from the browser history,
       // we no longer treat it as a *temporary* position.
       delete destination.temporary;
@@ -628,7 +628,7 @@ class PDFHistory {
     if (
       (typeof PDFJSDev !== "undefined" &&
         PDFJSDev.test("CHROME") &&
-        state?.chromecomState &&
+        state.chromecomState &&
         !this._isValidState(state)) ||
       !state
     ) {

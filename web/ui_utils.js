@@ -704,7 +704,7 @@ function dispatchDOMEvent(eventName, args = null) {
     throw new Error("Not implemented: dispatchDOMEvent");
   }
   const details = Object.create(null);
-  if (args?.length > 0) {
+  if (args.length > 0) {
     const obj = args[0];
     for (const key in obj) {
       const value = obj[key];
@@ -731,7 +731,7 @@ class EventBus {
     this._listeners = Object.create(null);
 
     if (typeof PDFJSDev === "undefined" || PDFJSDev.test("MOZCENTRAL")) {
-      this._isInAutomation = options?.isInAutomation === true;
+      this._isInAutomation = options ? options.isInAutomation === true : false;
     }
   }
 
@@ -743,7 +743,7 @@ class EventBus {
   on(eventName, listener, options = null) {
     this._on(eventName, listener, {
       external: true,
-      once: options?.once,
+      once: options.once,
     });
   }
 
@@ -755,7 +755,7 @@ class EventBus {
   off(eventName, listener, options = null) {
     this._off(eventName, listener, {
       external: true,
-      once: options?.once,
+      once: options.once,
     });
   }
 
@@ -781,7 +781,7 @@ class EventBus {
         this._off(eventName, listener);
       }
       if (external) {
-        (externalListeners ||= []).push(listener);
+        (externalListeners = externalListeners || []).push(listener);
         continue;
       }
       listener.apply(null, args);
@@ -806,11 +806,11 @@ class EventBus {
    * @ignore
    */
   _on(eventName, listener, options = null) {
-    const eventListeners = (this._listeners[eventName] ||= []);
+    const eventListeners = (this._listeners[eventName] = this._listeners[eventName] || []);
     eventListeners.push({
       listener,
-      external: options?.external === true,
-      once: options?.once === true,
+      external: options && options.external === true,
+      once: options && options.once === true,
     });
   }
 
@@ -939,7 +939,7 @@ function getActiveOrFocusedElement() {
   let curActiveOrFocused =
     curRoot.activeElement || curRoot.querySelector(":focus");
 
-  while (curActiveOrFocused?.shadowRoot) {
+  while (curActiveOrFocused.shadowRoot) {
     curRoot = curActiveOrFocused.shadowRoot;
     curActiveOrFocused =
       curRoot.activeElement || curRoot.querySelector(":focus");

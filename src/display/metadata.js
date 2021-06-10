@@ -26,7 +26,7 @@ class Metadata {
   }
 
   get(name) {
-    return this._metadataMap.get(name) ?? null;
+    return this._metadataMap.get(name);
   }
 
   getAll() {

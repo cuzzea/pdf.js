@@ -357,7 +357,7 @@ class PDFThumbnailView {
       // pageView is *not* cached on the `BaseViewer`-instance.
       const pageCached = this.linkService.isPageCached(this.id);
       if (!pageCached) {
-        this.pdfPage?.cleanup();
+        this.pdfPage.cleanup();
       }
     });
 
@@ -456,13 +456,13 @@ class PDFThumbnailView {
 
   get _thumbPageTitle() {
     return this.l10n.get("thumb_page_title", {
-      page: this.pageLabel ?? this.id,
+      page: this.pageLabel || this.id,
     });
   }
 
   get _thumbPageCanvas() {
     return this.l10n.get("thumb_page_canvas", {
-      page: this.pageLabel ?? this.id,
+      page: this.pageLabel || this.id,
     });
   }
 
@@ -481,7 +481,7 @@ class PDFThumbnailView {
     }
 
     this._thumbPageCanvas.then(msg => {
-      this.image?.setAttribute("aria-label", msg);
+      this.image.setAttribute("aria-label", msg);
     });
   }
 }

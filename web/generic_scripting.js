@@ -32,8 +32,8 @@ async function docPropertiesLookup(pdfDocument) {
     baseURL: baseUrl,
     filesize: contentLength,
     filename: contentDispositionFilename || getPdfFilenameFromUrl(url),
-    metadata: metadata?.getRaw(),
-    authors: metadata?.get("dc:creator"),
+    metadata: metadata.getRaw(),
+    authors: metadata.get("dc:creator"),
     numPages: pdfDocument.numPages,
     URL: url,
   };

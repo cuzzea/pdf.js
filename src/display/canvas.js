@@ -1357,7 +1357,7 @@ const CanvasGraphics = (function CanvasGraphicsClosure() {
       // stroking alpha.
       ctx.globalAlpha = this.current.strokeAlpha;
       if (this.contentVisible) {
-        if (typeof strokeColor === "object" && strokeColor?.getPattern) {
+        if (typeof strokeColor === "object" && strokeColor.getPattern) {
           const lineWidth = this.getSinglePixelWidth();
           ctx.save();
           ctx.strokeStyle = strokeColor.getPattern(ctx, this);
@@ -2277,7 +2277,7 @@ const CanvasGraphics = (function CanvasGraphicsClosure() {
         }
       }
 
-      if (glyph?.compiled) {
+      if (glyph.compiled) {
         glyph.compiled(ctx);
         return;
       }

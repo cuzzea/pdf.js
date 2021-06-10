@@ -53,7 +53,7 @@ class PDFSidebarResizer {
    * @type {number}
    */
   get outerContainerWidth() {
-    return (this._outerContainerWidth ||= this.outerContainer.clientWidth);
+    return (this._outerContainerWidth = this._outerContainerWidth || this.outerContainer.clientWidth);
   }
 
   /**
@@ -126,13 +126,13 @@ class PDFSidebarResizer {
     });
 
     this.eventBus._on("sidebarviewchanged", evt => {
-      this.sidebarOpen = !!evt?.view;
+      this.sidebarOpen = !!evt.view;
     });
 
     this.eventBus._on("resize", evt => {
       // When the *entire* viewer is resized, such that it becomes narrower,
       // ensure that the sidebar doesn't end up being too wide.
-      if (evt?.source !== window) {
+      if (evt.source !== window) {
         return;
       }
       // Always reset the cached width when the viewer is resized.

@@ -2042,7 +2042,7 @@ gulp.task(
     "lib",
     "minified",
     "minified-legacy",
-    "types",
+    // "types",
     function createDist() {
       console.log();
       console.log("### Cloning baseline distribution");
@@ -2136,9 +2136,9 @@ gulp.task(
         gulp
           .src(LIB_DIR + "**/*", { base: LIB_DIR })
           .pipe(gulp.dest(DIST_DIR + "lib/")),
-        gulp
-          .src(TYPES_DIR + "**/*", { base: TYPES_DIR })
-          .pipe(gulp.dest(DIST_DIR + "types/")),
+        // gulp
+        //   .src(TYPES_DIR + "**/*", { base: TYPES_DIR })
+        //   .pipe(gulp.dest(DIST_DIR + "types/")),
       ]);
     }
   )

@@ -55,7 +55,7 @@ function normalize(text) {
     const normalizedCh = CHARACTERS_TO_NORMALIZE[ch],
       diff = normalizedCh.length - ch.length;
     if (diff !== 0) {
-      (diffs ||= []).push([index, diff]);
+      (diffs = diffs || []).push([index, diff]);
     }
     return normalizedCh;
   });
@@ -772,7 +772,7 @@ class PDFFindController {
       total = this._matchesCountTotal;
     if (matchIdx !== -1) {
       for (let i = 0; i < pageIdx; i++) {
-        current += this._pageMatches[i]?.length || 0;
+        current += this._pageMatches[i].length || 0;
       }
       current += matchIdx + 1;
     }
@@ -798,7 +798,7 @@ class PDFFindController {
       state,
       previous,
       matchesCount: this._requestMatchesCount(),
-      rawQuery: this._state?.query ?? null,
+      rawQuery: this._state && this._state.query ? this._state.query : null,
     });
   }
 }

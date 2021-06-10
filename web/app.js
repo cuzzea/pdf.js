@@ -314,7 +314,7 @@ const PDFViewerApplication = {
     try {
       AppOptions.setAll(await this.preferences.getAll());
     } catch (reason) {
-      console.error(`_readPreferences: "${reason?.message}".`);
+      console.error(`_readPreferences: "${reason.message}".`);
     }
   },
 
@@ -420,7 +420,7 @@ const PDFViewerApplication = {
     }
     try {
       const styleSheet = document.styleSheets[0];
-      const cssRules = styleSheet?.cssRules || [];
+      const cssRules = styleSheet.cssRules || [];
       const mediaMatcher =
         typeof PDFJSDev !== "undefined" && PDFJSDev.test("MOZCENTRAL")
           ? "-moz-toolbar-prefers-color-scheme"
@@ -431,14 +431,14 @@ const PDFViewerApplication = {
       );
       for (let i = 0, ii = cssRules.length; i < ii; i++) {
         const rule = cssRules[i];
-        if (rule instanceof CSSMediaRule && rule.media?.[0] === mediaRule) {
+        if (rule instanceof CSSMediaRule && rule.media.0] === mediaRule) {
           if (cssTheme === ViewerCssTheme.LIGHT) {
             styleSheet.deleteRule(i);
             return;
           }
           // cssTheme === ViewerCssTheme.DARK
           const darkRules = mediaRegex.exec(rule.cssText);
-          if (darkRules?.[1]) {
+          if (darkRules.1]) {
             styleSheet.deleteRule(i);
             styleSheet.insertRule(darkRules[1], i);
           }
@@ -446,7 +446,7 @@ const PDFViewerApplication = {
         }
       }
     } catch (reason) {
-      console.error(`_forceCssTheme: "${reason?.message}".`);
+      console.error(`_forceCssTheme: "${reason.message}".`);
     }
   },
 
@@ -804,7 +804,7 @@ const PDFViewerApplication = {
     }
     if (
       (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) &&
-      this.pdfDocument?.annotationStorage.size > 0 &&
+      this.pdfDocument.annotationStorage.size > 0 &&
       this._annotationStorageModified
     ) {
       try {
@@ -950,7 +950,7 @@ const PDFViewerApplication = {
           key = "unexpected_response_error";
         }
         return this.l10n.get(key).then(msg => {
-          this._documentError(msg, { message: exception?.message });
+          this._documentError(msg, { message: exception.message });
           throw exception;
         });
       }
@@ -1011,7 +1011,7 @@ const PDFViewerApplication = {
   },
 
   downloadOrSave(options) {
-    if (this.pdfDocument?.annotationStorage.size > 0) {
+    if (this.pdfDocument.annotationStorage.size > 0) {
       this.save(options);
     } else {
       this.download(options);
@@ -1253,7 +1253,7 @@ const PDFViewerApplication = {
           this._initializePdfHistory({
             fingerprint: pdfDocument.fingerprint,
             viewOnLoad,
-            initialDest: openAction?.dest,
+            initialDest: openAction.dest,
           });
           const initialBookmark = this.initialBookmark;
 
@@ -1425,8 +1425,8 @@ const PDFViewerApplication = {
       baseURL: this.baseUrl,
       filesize: this._contentLength,
       filename: this._docFilename,
-      metadata: this.metadata?.getRaw(),
-      authors: this.metadata?.get("dc:creator"),
+      metadata: this.metadata.getRaw(),
+      authors: this.metadata.get("dc:creator"),
       numPages: this.pagesCount,
       URL: this.url,
     };
@@ -1442,7 +1442,7 @@ const PDFViewerApplication = {
     if (pdfDocument !== this.pdfDocument) {
       return; // Document was closed while waiting for mark info.
     }
-    const tagged = markInfo?.Marked || false;
+    const tagged = markInfo.Marked || false;
     this.externalServices.reportTelemetry({
       type: "tagged",
       tagged,
@@ -1463,7 +1463,7 @@ const PDFViewerApplication = {
     }
     let triggerAutoPrint = false;
 
-    if (openAction?.action === "Print") {
+    if (openAction.action === "Print") {
       triggerAutoPrint = true;
     }
     if (javaScript) {
@@ -1505,8 +1505,8 @@ const PDFViewerApplication = {
     }
     this.documentInfo = info;
     this.metadata = metadata;
-    this._contentDispositionFilename ??= contentDispositionFilename;
-    this._contentLength ??= contentLength; // See `getDownloadInfo`-call above.
+    this._contentDispositionFilename = this._contentDispositionFilename ? this._contentDispositionFilename : contentDispositionFilename;
+    this._contentLength = this._contentLength ? this._contentLength : contentLength; // See `getDownloadInfo`-call above.
 
     // Provides some basic debug information
     console.log(
@@ -1515,9 +1515,9 @@ const PDFViewerApplication = {
         `(PDF.js: ${version || "-"})`
     );
 
-    let pdfTitle = info?.Title;
+    let pdfTitle = info.Title;
 
-    const metadataTitle = metadata?.get("dc:title");
+    const metadataTitle = metadata.get("dc:title");
     if (metadataTitle) {
       // Ghostscript can produce invalid 'dc:title' Metadata entries:
       //  - The title may be "Untitled" (fixes bug 1031612).
@@ -2121,7 +2121,7 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       }
     } catch (ex) {
       PDFViewerApplication.l10n.get("loading_error").then(msg => {
-        PDFViewerApplication._documentError(msg, { message: ex?.message });
+        PDFViewerApplication._documentError(msg, { message: ex.message });
       });
       throw ex;
     }
@@ -2154,7 +2154,7 @@ function reportPageStatsPDFBug({ pageNumber }) {
   const pageView = PDFViewerApplication.pdfViewer.getPageView(
     /* index = */ pageNumber - 1
   );
-  const pageStats = pageView?.pdfPage?.stats;
+  const pageStats = pageView.pdfPage.stats;
   if (!pageStats) {
     return;
   }
@@ -2426,7 +2426,7 @@ function webViewerUpdateViewarea(evt) {
   const currentPage = PDFViewerApplication.pdfViewer.getPageView(
     /* index = */ PDFViewerApplication.page - 1
   );
-  const loading = currentPage?.renderingState !== RenderingStates.FINISHED;
+  const loading = currentPage.renderingState !== RenderingStates.FINISHED;
   PDFViewerApplication.toolbar.updateLoadingIndicatorState(loading);
 }
 
@@ -2478,7 +2478,7 @@ function webViewerHashchange(evt) {
 let webViewerFileInputChange, webViewerOpenFile;
 if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
   webViewerFileInputChange = function (evt) {
-    if (PDFViewerApplication.pdfViewer?.isInPresentationMode) {
+    if (PDFViewerApplication.pdfViewer.isInPresentationMode) {
       return; // Opening a new PDF file isn't supported in Presentation Mode.
     }
     const file = evt.fileInput.files[0];
@@ -2792,7 +2792,7 @@ function webViewerKeyDown(evt) {
     (evt.metaKey ? 8 : 0);
 
   const pdfViewer = PDFViewerApplication.pdfViewer;
-  const isViewerInPresentationMode = pdfViewer?.isInPresentationMode;
+  const isViewerInPresentationMode = pdfViewer.isInPresentationMode;
 
   // First, handle the key bindings that are independent whether an input
   // control is selected or not.
@@ -2917,12 +2917,12 @@ function webViewerKeyDown(evt) {
   // Some shortcuts should not get handled if a control/input element
   // is selected.
   const curElement = getActiveOrFocusedElement();
-  const curElementTagName = curElement?.tagName.toUpperCase();
+  const curElementTagName = curElement.tagName.toUpperCase();
   if (
     curElementTagName === "INPUT" ||
     curElementTagName === "TEXTAREA" ||
     curElementTagName === "SELECT" ||
-    curElement?.isContentEditable
+    curElement.isContentEditable
   ) {
     // Make sure that the secondary toolbar is closed when Escape is pressed.
     if (evt.keyCode !== /* Esc = */ 27) {

@@ -480,7 +480,7 @@ class LinkAnnotationElement extends AnnotationElement {
         continue;
       }
       link[jsName] = () => {
-        this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
+        this.linkService.eventBus.dispatch && this.linkService.eventBus.dispatch("dispatcheventinsandbox", {
           source: this,
           detail: {
             id: data.id,
@@ -549,7 +549,7 @@ class WidgetAnnotationElement extends AnnotationElement {
     if (baseName.includes("mouse")) {
       // Mouse events
       element.addEventListener(baseName, event => {
-        this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
+        this.linkService.eventBus.dispatch && this.linkService.eventBus.dispatch("dispatcheventinsandbox", {
           source: this,
           detail: {
             id: this.data.id,
@@ -563,7 +563,7 @@ class WidgetAnnotationElement extends AnnotationElement {
     } else {
       // Non mouse event
       element.addEventListener(baseName, event => {
-        this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
+        this.linkService.eventBus.dispatch && this.linkService.eventBus.dispatch("dispatcheventinsandbox", {
           source: this,
           detail: {
             id: this.data.id,
@@ -577,7 +577,7 @@ class WidgetAnnotationElement extends AnnotationElement {
 
   _setEventListeners(element, names, getter) {
     for (const [baseName, eventName] of names) {
-      if (eventName === "Action" || this.data.actions?.[eventName]) {
+      if (eventName === "Action" || this.data.actions[eventName]) {
         this._setEventListener(element, baseName, eventName, getter);
       }
     }
@@ -792,7 +792,7 @@ class TextWidgetAnnotationElement extends WidgetAnnotationElement {
           }
           // Save the entered value
           elementData.userValue = event.target.value;
-          this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
+          this.linkService.eventBus.dispatch && this.linkService.eventBus.dispatch("dispatcheventinsandbox", {
             source: this,
             detail: {
               id,
@@ -811,7 +811,7 @@ class TextWidgetAnnotationElement extends WidgetAnnotationElement {
           if (this._mouseState.isDown) {
             // Focus out using the mouse: data are committed
             elementData.userValue = event.target.value;
-            this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
+            this.linkService.eventBus.dispatch && this.linkService.eventBus.dispatch("dispatcheventinsandbox", {
               source: this,
               detail: {
                 id,
@@ -843,7 +843,7 @@ class TextWidgetAnnotationElement extends WidgetAnnotationElement {
           ];
         });
 
-        if (this.data.actions?.Keystroke) {
+        if (this.data.actions.Keystroke) {
           // We should use beforeinput but this
           // event isn't available in Firefox
           element.addEventListener("input", event => {
@@ -852,7 +852,7 @@ class TextWidgetAnnotationElement extends WidgetAnnotationElement {
             if (elementData.beforeInputSelectionRange) {
               [selStart, selEnd] = elementData.beforeInputSelectionRange;
             }
-            this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
+            this.linkService.eventBus.dispatch && this.linkService.eventBus.dispatch("dispatcheventinsandbox", {
               source: this,
               detail: {
                 id,
@@ -1272,7 +1272,7 @@ class ChoiceWidgetAnnotationElement extends WidgetAnnotationElement {
         const value = getValue(event, /* isExport */ false);
         storage.setValue(id, { value: exportValue });
 
-        this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
+        this.linkService.eventBus.dispatch && this.linkService.eventBus.dispatch("dispatcheventinsandbox", {
           source: this,
           detail: {
             id,
@@ -1959,7 +1959,7 @@ class FileAttachmentAnnotationElement extends AnnotationElement {
     this.filename = getFilenameFromUrl(filename);
     this.content = content;
 
-    this.linkService.eventBus?.dispatch("fileattachmentannotation", {
+    this.linkService.eventBus.dispatch && this.linkService.eventBus.dispatch("fileattachmentannotation", {
       source: this,
       id: stringToPDFString(filename),
       filename,
@@ -1990,7 +1990,7 @@ class FileAttachmentAnnotationElement extends AnnotationElement {
    * @memberof FileAttachmentAnnotationElement
    */
   _download() {
-    this.downloadManager?.openOrDownloadData(
+    this.downloadManager.openOrDownloadData && this.downloadManager.openOrDownloadData(
       this.container,
       this.content,
       this.filename

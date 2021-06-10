@@ -1010,7 +1010,7 @@ if (
       const current = this.current;
       if (
         current.textRenderingMode & TextRenderingMode.ADD_TO_PATH_FLAG &&
-        current.txtElement?.hasChildNodes()
+        current.txtElement && current.txtElement.hasChildNodes()
       ) {
         // If no glyphs are shown (i.e. no child nodes), no clipping occurs.
         current.element = current.txtElement;

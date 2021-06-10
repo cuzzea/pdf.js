@@ -125,7 +125,7 @@ class BaseFontLoader {
   }
 
   get isFontLoadingAPISupported() {
-    const hasFonts = !!this._document?.fonts;
+    const hasFonts = !!(this._document && this._document.fonts);
     if (
       typeof PDFJSDev === "undefined" ||
       PDFJSDev.test("!PRODUCTION || TESTING")
@@ -186,7 +186,7 @@ if (typeof PDFJSDev !== "undefined" && PDFJSDev.test("MOZCENTRAL")) {
           const m = /Mozilla\/5.0.*?rv:(\d+).*? Gecko/.exec(
             navigator.userAgent
           );
-          if (m?.[1] >= 14) {
+          if (m && m[1] && m[1] >= 14) {
             supported = true;
           }
           // TODO - other browsers...

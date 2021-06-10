@@ -260,7 +260,7 @@ class PDFThumbnailViewer {
     }
     // Update all the `PDFThumbnailView` instances.
     for (let i = 0, ii = this._thumbnails.length; i < ii; i++) {
-      this._thumbnails[i].setPageLabel(this._pageLabels?.[i] ?? null);
+      this._thumbnails[i].setPageLabel(this._pageLabels[i] ? this._pageLabels[i] : null);
     }
   }
 

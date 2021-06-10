@@ -118,7 +118,7 @@ class PDFLayerViewer extends BaseTreeViewer {
     this._optionalContentConfig = optionalContentConfig || null;
     this._pdfDocument = pdfDocument || null;
 
-    const groups = optionalContentConfig?.getOrder();
+    const groups = optionalContentConfig.getOrder();
     if (!groups) {
       this._dispatchEvent(/* layersCount = */ 0);
       return;

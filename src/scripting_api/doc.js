@@ -124,7 +124,7 @@ class Doc extends PDFObject {
       this._pageNum = pageNumber - 1;
     }
 
-    actions = this._pageActions.get(pageNumber)?.get(name);
+    actions = this._pageActions.get(pageNumber).get(name);
     if (actions) {
       for (const action of actions) {
         this._globalEval(action);

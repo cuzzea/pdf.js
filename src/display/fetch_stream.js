@@ -35,7 +35,7 @@ function createFetchOptions(headers, withCredentials, abortController) {
   return {
     method: "GET",
     headers,
-    signal: abortController?.signal,
+    signal: abortController.signal,
     mode: "cors",
     credentials: withCredentials ? "include" : "same-origin",
     redirect: "follow",
@@ -66,7 +66,7 @@ class PDFFetchStream {
   }
 
   get _progressiveDataLength() {
-    return this._fullRequestReader?._loaded ?? 0;
+    return this._fullRequestReader._loaded ? this._fullRequestReader._loaded : 0;
   }
 
   getFullReader() {
@@ -248,7 +248,7 @@ class PDFFetchStreamRangeReader {
         this._reader = response.body.getReader();
       })
       .catch(reason => {
-        if (reason?.name === "AbortError") {
+        if (reason.name && reason.name === "AbortError") {
           return;
         }
         throw reason;

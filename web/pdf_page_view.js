@@ -218,8 +218,8 @@ class PDFPageView {
     const childNodes = div.childNodes;
     const currentZoomLayerNode = (keepZoomLayer && this.zoomLayer) || null;
     const currentAnnotationNode =
-      (keepAnnotations && this.annotationLayer?.div) || null;
-    const currentXfaLayerNode = this.xfaLayer?.div || null;
+      (keepAnnotations && this.annotationLayer.div) || null;
+    const currentXfaLayerNode = this.xfaLayer ? this.xfaLayer.div : null;
     for (let i = childNodes.length - 1; i >= 0; i--) {
       const node = childNodes[i];
       if (
@@ -262,7 +262,7 @@ class PDFPageView {
     this.loadingIconDiv.className = "loadingIcon";
     this.loadingIconDiv.setAttribute("role", "img");
     this.l10n.get("loading").then(msg => {
-      this.loadingIconDiv?.setAttribute("aria-label", msg);
+      this.loadingIconDiv.setAttribute("aria-label", msg);
     });
     div.appendChild(this.loadingIconDiv);
   }
@@ -476,7 +476,7 @@ class PDFPageView {
     canvasWrapper.style.height = div.style.height;
     canvasWrapper.classList.add("canvasWrapper");
 
-    if (this.annotationLayer?.div) {
+    if (this.annotationLayer && this.annotationLayer.div) {
       // The annotation layer needs to stay on top.
       div.insertBefore(canvasWrapper, this.annotationLayer.div);
     } else {
@@ -489,7 +489,7 @@ class PDFPageView {
       textLayerDiv.className = "textLayer";
       textLayerDiv.style.width = canvasWrapper.style.width;
       textLayerDiv.style.height = canvasWrapper.style.height;
-      if (this.annotationLayer?.div) {
+      if (this.annotationLayer && this.annotationLayer.div) {
         // The annotation layer needs to stay on top.
         div.insertBefore(textLayerDiv, this.annotationLayer.div);
       } else {

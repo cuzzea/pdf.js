@@ -165,8 +165,8 @@ class BaseViewer {
     ) {
       if (
         !(
-          this.container?.tagName.toUpperCase() === "DIV" &&
-          this.viewer?.tagName.toUpperCase() === "DIV"
+          this.container.tagName.toUpperCase() === "DIV" &&
+          this.viewer.tagName.toUpperCase() === "DIV"
         )
       ) {
         throw new Error("Invalid `container` and/or `viewer` option.");
@@ -240,7 +240,7 @@ class BaseViewer {
     // Prevent printing errors when 'disableAutoFetch' is set, by ensuring
     // that *all* pages have in fact been completely loaded.
     return this._pages.every(function (pageView) {
-      return pageView?.pdfPage;
+      return pageView.pdfPage;
     });
   }
 
@@ -290,7 +290,7 @@ class BaseViewer {
     this.eventBus.dispatch("pagechanging", {
       source: this,
       pageNumber: val,
-      pageLabel: this._pageLabels?.[val - 1] ?? null,
+      pageLabel: this._pageLabels[val - 1] || null,
       previous,
     });
 
@@ -305,7 +305,7 @@ class BaseViewer {
    *   labels exist.
    */
   get currentPageLabel() {
-    return this._pageLabels?.[this._currentPageNumber - 1] ?? null;
+    return this._pageLabels[this._currentPageNumber - 1] || null;
   }
 
   /**
@@ -644,7 +644,7 @@ class BaseViewer {
     }
     // Update all the `PDFPageView` instances.
     for (let i = 0, ii = this._pages.length; i < ii; i++) {
-      this._pages[i].setPageLabel(this._pageLabels?.[i] ?? null);
+      this._pages[i].setPageLabel(this._pageLabels[i] || null);
     }
   }
 
@@ -1301,16 +1301,16 @@ class BaseViewer {
       pageDiv,
       pdfPage,
       annotationStorage:
-        annotationStorage || this.pdfDocument?.annotationStorage,
+        annotationStorage || this.pdfDocument.annotationStorage,
       imageResourcesPath,
       renderInteractiveForms,
       linkService: this.linkService,
       downloadManager: this.downloadManager,
       l10n,
-      enableScripting: enableScripting ?? this.enableScripting,
+      enableScripting: enableScripting || this.enableScripting,
       hasJSActionsPromise:
-        hasJSActionsPromise || this.pdfDocument?.hasJSActions(),
-      mouseState: mouseState || this._scriptingManager?.mouseState,
+        hasJSActionsPromise || this.pdfDocument.hasJSActions(),
+      mouseState: mouseState || this._scriptingManager.mouseState,
     });
   }
 
@@ -1326,7 +1326,7 @@ class BaseViewer {
       pageDiv,
       pdfPage,
       annotationStorage:
-        annotationStorage || this.pdfDocument?.annotationStorage,
+        annotationStorage || this.pdfDocument.annotationStorage,
     });
   }
 
@@ -1557,7 +1557,7 @@ class BaseViewer {
           }
           let yArray = pageLayout.get(y);
           if (!yArray) {
-            pageLayout.set(y, (yArray ||= []));
+            pageLayout.set(y, (yArray = yArray || []));
           }
           yArray.push(id);
         }

@@ -154,7 +154,7 @@ class BaseTreeViewer {
     while (currentNode && currentNode !== this.container) {
       if (currentNode.classList.contains("treeItem")) {
         const toggler = currentNode.firstElementChild;
-        toggler?.classList.remove("treeItemsHidden");
+        toggler.classList.remove("treeItemsHidden");
       }
       currentNode = currentNode.parentNode;
     }
