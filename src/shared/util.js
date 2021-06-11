@@ -76,6 +76,7 @@ const AnnotationType = {
   WATERMARK: 24,
   THREED: 25,
   REDACT: 26,
+  OVERWRITE: 999,
 };
 
 const AnnotationStateModelType = {

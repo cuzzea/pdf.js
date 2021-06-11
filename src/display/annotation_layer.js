@@ -49,13 +49,83 @@ import { ColorConverters } from "../shared/scripting_utils.js";
  * @property {boolean} [hasJSActions]
  * @property {Object} [mouseState]
  */
-
 class AnnotationElementFactory {
+
   /**
+   * Attach a custom annotation type
+   * @param {AnnotationType} type 
+   */
+  static getCustomElements(type) {
+    if (!('privateCustomElementListeners' in AnnotationElementFactory)) {
+      AnnotationElementFactory.privateCustomElementListeners = {};
+    }
+    if (!(type in AnnotationElementFactory.privateCustomElementListeners)) {
+      AnnotationElementFactory.privateCustomElementListeners[type] = [];
+    }
+    return AnnotationElementFactory.privateCustomElementListeners[type]
+  }
+
+  /**
+   * Attach a custom annotation type
+   * @param {AnnotationType} type 
+   * @param {CustomAnnotationElement} cbk 
+   */
+  static addCustomElement(type, cbk) {
+    if (!('privateCustomElementListeners' in AnnotationElementFactory)) {
+      AnnotationElementFactory.privateCustomElementListeners = {};
+    }
+
+    if (!(type in AnnotationElementFactory.privateCustomElementListeners)) {
+      AnnotationElementFactory.privateCustomElementListeners[type] = [];
+    }
+    AnnotationElementFactory.privateCustomElementListeners[type].push(cbk);
+  }
+
+  /**
+   * Returns the element by going through the custom elements.
    * @param {AnnotationElementParameters} parameters
    * @returns {AnnotationElement}
    */
   static create(parameters) {
+    try {
+      let subtype = parameters.data.annotationType;
+
+      if (subtype in AnnotationElementFactory.privateCustomElementListeners) {
+        for (let i=0; i < AnnotationElementFactory.privateCustomElementListeners[subtype].length; i++) {
+          if ('create' in AnnotationElementFactory.privateCustomElementListeners[subtype][i]) {
+            let res = AnnotationElementFactory.privateCustomElementListeners[subtype][i].create(parameters);
+            if (res) {
+              return res;
+            }
+          }
+        }
+      }
+      
+      let internalRes = AnnotationElementFactory.createInternal(parameters);
+      subtype = AnnotationType.OVERWRITE;
+      if (subtype in AnnotationElementFactory.privateCustomElementListeners) {
+        for (let i=0; i < AnnotationElementFactory.privateCustomElementListeners[subtype].length; i++) {
+          if ('update' in AnnotationElementFactory.privateCustomElementListeners[subtype][i]) {
+            let res = AnnotationElementFactory.privateCustomElementListeners[subtype][i].update(parameters, internalRes);
+            if (res) {
+              return res;
+            }
+          }
+        }
+      }
+
+      return internalRes;
+    } catch(e) {
+      console.log('AnnotationElementFactory create error', e);
+      throw(e);
+    }
+  }
+
+  /**
+   * @param {AnnotationElementParameters} parameters
+   * @returns {AnnotationElement}
+   */
+  static createInternal(parameters) {
     const subtype = parameters.data.annotationType;
 
     switch (subtype) {
@@ -2015,6 +2085,15 @@ class FileAttachmentAnnotationElement extends AnnotationElement {
  */
 
 class AnnotationLayer {
+
+  /**
+   * Returns AnnotationElementFactory.
+   * @returns {AnnotationElementFactory}
+   */
+  static getAnnotationElementFactory() {
+    return AnnotationElementFactory;
+  }
+
   /**
    * Render a new annotation layer with all annotation elements.
    *
@@ -2104,4 +2183,31 @@ class AnnotationLayer {
   }
 }
 
-export { AnnotationLayer };
+export {
+  AnnotationLayer,
+  LinkAnnotationElement,
+  TextAnnotationElement,
+  WidgetAnnotationElement,
+  TextWidgetAnnotationElement,
+  CheckboxWidgetAnnotationElement,
+  RadioButtonWidgetAnnotationElement,
+  PushButtonWidgetAnnotationElement,
+  ChoiceWidgetAnnotationElement,
+  PopupAnnotationElement,
+  PopupElement,
+  FreeTextAnnotationElement,
+  LineAnnotationElement,
+  SquareAnnotationElement,
+  CircleAnnotationElement,
+  PolylineAnnotationElement,
+  PolygonAnnotationElement,
+  CaretAnnotationElement,
+  InkAnnotationElement,
+  HighlightAnnotationElement,
+  UnderlineAnnotationElement,
+  SquigglyAnnotationElement,
+  StrikeOutAnnotationElement,
+  StampAnnotationElement,
+  FileAttachmentAnnotationElement,
+  AnnotationElement
+};
